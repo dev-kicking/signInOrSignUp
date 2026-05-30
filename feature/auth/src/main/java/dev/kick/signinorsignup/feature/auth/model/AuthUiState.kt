@@ -9,6 +9,8 @@ data class AuthUiState(
     val password: String = "",
     val name: String = "",
     val emailErrorMessage: String? = null,
+    val passwordErrorMessage: String? = null,
+    val nameErrorMessage: String? = null,
     val helperMessage: String? = null,
     val isLoading: Boolean = false,
 ) {

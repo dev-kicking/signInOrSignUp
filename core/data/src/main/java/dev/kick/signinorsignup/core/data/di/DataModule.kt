@@ -10,6 +10,8 @@ import dagger.hilt.components.SingletonComponent
 import dev.kick.signinorsignup.core.data.local.AuthDatabase
 import dev.kick.signinorsignup.core.data.local.UserDao
 import dev.kick.signinorsignup.core.data.repository.AuthRepositoryImpl
+import dev.kick.signinorsignup.core.data.source.local.AuthLocalDataSource
+import dev.kick.signinorsignup.core.data.source.local.AuthLocalDataSourceImpl
 import dev.kick.signinorsignup.core.domain.repository.AuthRepository
 import javax.inject.Singleton
 
@@ -35,7 +37,13 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(userDao: UserDao): AuthRepository {
-        return AuthRepositoryImpl(userDao)
+    fun provideAuthLocalDataSource(userDao: UserDao): AuthLocalDataSource {
+        return AuthLocalDataSourceImpl(userDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(localDataSource: AuthLocalDataSource): AuthRepository {
+        return AuthRepositoryImpl(localDataSource)
     }
 }

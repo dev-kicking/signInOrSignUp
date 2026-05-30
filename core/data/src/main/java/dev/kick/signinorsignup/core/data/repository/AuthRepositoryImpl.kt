@@ -1,17 +1,17 @@
 package dev.kick.signinorsignup.core.data.repository
 
-import dev.kick.signinorsignup.core.data.local.UserDao
 import dev.kick.signinorsignup.core.data.local.UserEntity
 import dev.kick.signinorsignup.core.data.mapper.toDomain
+import dev.kick.signinorsignup.core.data.source.local.AuthLocalDataSource
 import dev.kick.signinorsignup.core.domain.model.User
 import dev.kick.signinorsignup.core.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val userDao: UserDao,
+    private val localDataSource: AuthLocalDataSource,
 ) : AuthRepository {
     override suspend fun findUserByEmail(email: String): User? {
-        return userDao.findByEmail(email)?.toDomain()
+        return localDataSource.findUserByEmail(email)?.toDomain()
     }
 
     override suspend fun registerUser(
@@ -24,7 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
             name = name,
             password = password,
         )
-        userDao.upsert(entity)
+        localDataSource.saveUser(entity)
         return entity.toDomain()
     }
 
@@ -32,7 +32,7 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String,
     ): User? {
-        return userDao.findByEmailAndPassword(
+        return localDataSource.findUserByEmailAndPassword(
             email = email,
             password = password,
         )?.toDomain()

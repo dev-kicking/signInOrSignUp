@@ -1,6 +1,8 @@
 package dev.kick.signinorsignup.core.domain.usecase
 
-class ValidatePasswordUseCase {
+import javax.inject.Inject
+
+class ValidatePasswordUseCase @Inject constructor() {
     operator fun invoke(password: String): Boolean {
         return password.length >= MIN_PASSWORD_LENGTH
     }
