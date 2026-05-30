@@ -16,18 +16,23 @@ import dev.kick.signinorsignup.core.navigation.SignupComplete
 import dev.kick.signinorsignup.core.navigation.SignupEmail
 import dev.kick.signinorsignup.core.navigation.SignupName
 import dev.kick.signinorsignup.core.navigation.SignupPassword
-import dev.kick.signinorsignup.feature.auth.AuthScreen
 import dev.kick.signinorsignup.feature.auth.AuthViewModel
 import dev.kick.signinorsignup.feature.auth.model.AuthIntent
 import dev.kick.signinorsignup.feature.auth.model.AuthSideEffect
 import dev.kick.signinorsignup.feature.auth.model.AuthUiState
+import dev.kick.signinorsignup.feature.auth.screen.AuthEmailScreen
+import dev.kick.signinorsignup.feature.auth.screen.LoginScreen
+import dev.kick.signinorsignup.feature.auth.screen.SignupCompleteScreen
+import dev.kick.signinorsignup.feature.auth.screen.SignupEmailScreen
+import dev.kick.signinorsignup.feature.auth.screen.SignupNameScreen
+import dev.kick.signinorsignup.feature.auth.screen.SignupPasswordScreen
 
 fun NavGraphBuilder.authNavGraph(
     navigateToLogin: (String) -> Unit,
     navigateToSignupEmail: (String) -> Unit,
     navigateToSignupName: (String) -> Unit,
     navigateToSignupPassword: (String, String) -> Unit,
-    navigateToSignupComplete: () -> Unit,
+    navigateToSignupComplete: (String) -> Unit,
     navigateBack: () -> Unit,
 ) {
     navigation<AuthGraph>(
@@ -41,10 +46,10 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
                 navigateBack = navigateBack,
-            ) { _ ->
-                AuthScreen(
-                    title = "이메일 입력",
-                    description = "로그인 또는 회원가입을 시작합니다.",
+            ) { uiState, onIntent ->
+                AuthEmailScreen(
+                    uiState = uiState,
+                    onIntent = onIntent,
                 )
             }
         }
@@ -60,10 +65,10 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
                 navigateBack = navigateBack,
-            ) { uiState ->
-                AuthScreen(
-                    title = "로그인",
-                    description = "${uiState.email} 계정의 비밀번호를 입력합니다.",
+            ) { uiState, onIntent ->
+                LoginScreen(
+                    uiState = uiState,
+                    onIntent = onIntent,
                 )
             }
         }
@@ -79,10 +84,10 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
                 navigateBack = navigateBack,
-            ) { uiState ->
-                AuthScreen(
-                    title = "회원가입 이메일",
-                    description = uiState.email.ifBlank { "가입에 사용할 이메일을 입력합니다." },
+            ) { uiState, onIntent ->
+                SignupEmailScreen(
+                    uiState = uiState,
+                    onIntent = onIntent,
                 )
             }
         }
@@ -98,10 +103,10 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
                 navigateBack = navigateBack,
-            ) { _ ->
-                AuthScreen(
-                    title = "회원가입 이름",
-                    description = "사용자 이름을 입력합니다.",
+            ) { uiState, onIntent ->
+                SignupNameScreen(
+                    uiState = uiState,
+                    onIntent = onIntent,
                 )
             }
         }
@@ -118,15 +123,17 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
                 navigateBack = navigateBack,
-            ) { uiState ->
-                AuthScreen(
-                    title = "회원가입 비밀번호",
-                    description = "${uiState.name}님의 비밀번호를 입력합니다.",
+            ) { uiState, onIntent ->
+                SignupPasswordScreen(
+                    uiState = uiState,
+                    onIntent = onIntent,
                 )
             }
         }
 
-        composable<SignupComplete> {
+        composable<SignupComplete> { backStackEntry ->
+            val route = backStackEntry.toRoute<SignupComplete>()
+
             AuthRoute(
                 navigateToLogin = navigateToLogin,
                 navigateToSignupEmail = navigateToSignupEmail,
@@ -134,10 +141,10 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
                 navigateBack = navigateBack,
-            ) { _ ->
-                AuthScreen(
-                    title = "가입 완료",
-                    description = "DEEP.FINE 가입이 완료되었습니다.",
+            ) { _, onIntent ->
+                SignupCompleteScreen(
+                    name = route.name,
+                    onIntent = onIntent,
                 )
             }
         }
@@ -153,9 +160,9 @@ private fun AuthRoute(
     navigateToSignupEmail: (String) -> Unit,
     navigateToSignupName: (String) -> Unit,
     navigateToSignupPassword: (String, String) -> Unit,
-    navigateToSignupComplete: () -> Unit,
+    navigateToSignupComplete: (String) -> Unit,
     navigateBack: () -> Unit,
-    content: @Composable (AuthUiState) -> Unit,
+    content: @Composable (AuthUiState, (AuthIntent) -> Unit) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -177,11 +184,11 @@ private fun AuthRoute(
                 is AuthSideEffect.NavigateToSignupPassword -> {
                     navigateToSignupPassword(sideEffect.email, sideEffect.name)
                 }
-                AuthSideEffect.NavigateToSignupComplete -> navigateToSignupComplete()
+                is AuthSideEffect.NavigateToSignupComplete -> navigateToSignupComplete(sideEffect.name)
                 AuthSideEffect.NavigateBack -> navigateBack()
             }
         }
     }
 
-    content(uiState)
+    content(uiState, viewModel::handleIntent)
 }

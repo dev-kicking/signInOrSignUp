@@ -1,7 +1,12 @@
 package dev.kick.signinorsignup.feature.auth.model
 
+import androidx.annotation.StringRes
+
 sealed interface AuthSideEffect {
-    data class ShowMessage(val message: String) : AuthSideEffect
+    data class ShowMessage(
+        @StringRes val messageResId: Int,
+    ) : AuthSideEffect
+
     data class NavigateToLogin(val email: String) : AuthSideEffect
     data class NavigateToSignupEmail(val email: String) : AuthSideEffect
     data class NavigateToSignupName(val email: String) : AuthSideEffect
@@ -10,6 +15,9 @@ sealed interface AuthSideEffect {
         val name: String,
     ) : AuthSideEffect
 
-    data object NavigateToSignupComplete : AuthSideEffect
+    data class NavigateToSignupComplete(
+        val name: String,
+    ) : AuthSideEffect
+
     data object NavigateBack : AuthSideEffect
 }

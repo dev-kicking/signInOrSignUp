@@ -9,6 +9,7 @@ import dev.kick.signinorsignup.core.domain.usecase.RegisterUserUseCase
 import dev.kick.signinorsignup.core.domain.usecase.ValidateEmailUseCase
 import dev.kick.signinorsignup.core.domain.usecase.ValidateNameUseCase
 import dev.kick.signinorsignup.core.domain.usecase.ValidatePasswordUseCase
+import dev.kick.signinorsignup.feature.auth.R
 import dev.kick.signinorsignup.feature.auth.model.AuthIntent
 import dev.kick.signinorsignup.feature.auth.model.AuthSideEffect
 import dev.kick.signinorsignup.feature.auth.model.AuthUiState
@@ -56,18 +57,17 @@ class AuthViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 email = email,
-                emailErrorMessage = null,
-                helperMessage = null,
+                emailErrorMessageResId = null,
             )
         }
     }
 
     private fun updatePassword(password: String) {
-        _uiState.update { it.copy(password = password, passwordErrorMessage = null) }
+        _uiState.update { it.copy(password = password, passwordErrorMessageResId = null) }
     }
 
     private fun updateName(name: String) {
-        _uiState.update { it.copy(name = name, nameErrorMessage = null) }
+        _uiState.update { it.copy(name = name, nameErrorMessageResId = null) }
     }
 
     private fun submitEmail() {
@@ -75,7 +75,7 @@ class AuthViewModel @Inject constructor(
 
         if (!validateEmailUseCase(email)) {
             _uiState.update {
-                it.copy(emailErrorMessage = "이메일 형식이 올바르지 않습니다.")
+                it.copy(emailErrorMessageResId = R.string.auth_error_invalid_email)
             }
             return
         }
@@ -96,7 +96,7 @@ class AuthViewModel @Inject constructor(
 
         if (!validateEmailUseCase(email)) {
             _uiState.update {
-                it.copy(emailErrorMessage = "이메일 형식이 올바르지 않습니다.")
+                it.copy(emailErrorMessageResId = R.string.auth_error_invalid_email)
             }
             return
         }
@@ -110,7 +110,7 @@ class AuthViewModel @Inject constructor(
         val state = uiState.value
 
         if (!validatePasswordUseCase(state.password)) {
-            _uiState.update { it.copy(passwordErrorMessage = "비밀번호는 8자 이상 입력해주세요.") }
+            _uiState.update { it.copy(passwordErrorMessageResId = R.string.auth_error_invalid_password) }
             return
         }
 
@@ -122,9 +122,9 @@ class AuthViewModel @Inject constructor(
                 )
 
                 if (user == null) {
-                    _uiState.update { it.copy(passwordErrorMessage = "비밀번호가 올바르지 않습니다.") }
+                    _uiState.update { it.copy(passwordErrorMessageResId = R.string.auth_error_wrong_password) }
                 } else {
-                    _sideEffect.send(AuthSideEffect.ShowMessage("로그인되었습니다."))
+                    _sideEffect.send(AuthSideEffect.ShowMessage(R.string.auth_message_login_success))
                 }
             }
         }
@@ -134,7 +134,7 @@ class AuthViewModel @Inject constructor(
         val name = uiState.value.name
 
         if (!validateNameUseCase(name)) {
-            _uiState.update { it.copy(nameErrorMessage = "이름을 입력해주세요.") }
+            _uiState.update { it.copy(nameErrorMessageResId = R.string.auth_error_empty_name) }
             return
         }
 
@@ -152,7 +152,7 @@ class AuthViewModel @Inject constructor(
         val state = uiState.value
 
         if (!validatePasswordUseCase(state.password)) {
-            _uiState.update { it.copy(passwordErrorMessage = "비밀번호는 8자 이상 입력해주세요.") }
+            _uiState.update { it.copy(passwordErrorMessageResId = R.string.auth_error_invalid_password) }
             return
         }
 
@@ -163,7 +163,7 @@ class AuthViewModel @Inject constructor(
                     name = state.name,
                     password = state.password,
                 )
-                _sideEffect.send(AuthSideEffect.NavigateToSignupComplete)
+                _sideEffect.send(AuthSideEffect.NavigateToSignupComplete(name = state.name))
             }
         }
     }
@@ -177,7 +177,7 @@ class AuthViewModel @Inject constructor(
     private suspend fun runWithLoading(block: suspend () -> Unit) {
         _uiState.update { it.copy(isLoading = true) }
         runCatching { block() }
-            .onFailure { _sideEffect.send(AuthSideEffect.ShowMessage("잠시 후 다시 시도해주세요.")) }
+            .onFailure { _sideEffect.send(AuthSideEffect.ShowMessage(R.string.auth_message_unknown_error)) }
         _uiState.update { it.copy(isLoading = false) }
     }
 }

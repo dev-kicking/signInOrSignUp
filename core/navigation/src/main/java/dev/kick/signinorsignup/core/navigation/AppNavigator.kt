@@ -34,8 +34,8 @@ class AppNavigator(
         )
     }
 
-    fun navigateToSignupComplete() {
-        navController.navigate(SignupComplete)
+    fun navigateToSignupComplete(name: String) {
+        navController.navigate(SignupComplete(name = name))
     }
 
     fun navigateBack() {

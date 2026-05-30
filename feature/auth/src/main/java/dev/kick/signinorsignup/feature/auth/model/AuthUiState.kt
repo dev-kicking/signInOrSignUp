@@ -1,5 +1,6 @@
 package dev.kick.signinorsignup.feature.auth.model
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 
 @Immutable
@@ -7,10 +8,9 @@ data class AuthUiState(
     val email: String = "",
     val password: String = "",
     val name: String = "",
-    val emailErrorMessage: String? = null,
-    val passwordErrorMessage: String? = null,
-    val nameErrorMessage: String? = null,
-    val helperMessage: String? = null,
+    @StringRes val emailErrorMessageResId: Int? = null,
+    @StringRes val passwordErrorMessageResId: Int? = null,
+    @StringRes val nameErrorMessageResId: Int? = null,
     val isLoading: Boolean = false,
 ) {
     val isEmailSubmitEnabled: Boolean = email.isNotBlank() && !isLoading

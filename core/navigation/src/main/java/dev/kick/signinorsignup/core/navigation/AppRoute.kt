@@ -30,4 +30,6 @@ data class SignupPassword(
 )
 
 @Serializable
-data object SignupComplete
+data class SignupComplete(
+    val name: String,
+)
