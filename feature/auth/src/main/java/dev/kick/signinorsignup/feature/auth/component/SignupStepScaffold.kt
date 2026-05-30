@@ -96,7 +96,10 @@ private fun SignupStepTopBar(
             contentPadding = PaddingValues(0.dp),
             modifier = Modifier.size(48.dp),
         ) {
-            Text(text = stringResource(id = R.string.auth_action_back))
+            Text(
+                text = stringResource(id = R.string.auth_action_back),
+                style = MaterialTheme.typography.labelMedium,
+            )
         }
     }
 }

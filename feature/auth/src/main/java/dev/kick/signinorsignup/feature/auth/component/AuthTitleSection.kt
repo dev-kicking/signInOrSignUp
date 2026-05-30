@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -15,11 +16,13 @@ fun AuthTitleSection(
     title: String,
     description: String,
     modifier: Modifier = Modifier,
+    titleStyle: TextStyle = MaterialTheme.typography.headlineMedium,
 ) {
     AuthTitleSection(
         title = AnnotatedString(title),
         description = description,
         modifier = modifier,
+        titleStyle = titleStyle,
     )
 }
 
@@ -28,19 +31,20 @@ fun AuthTitleSection(
     title: AnnotatedString,
     description: String,
     modifier: Modifier = Modifier,
+    titleStyle: TextStyle = MaterialTheme.typography.headlineMedium,
 ) {
     Column(modifier = modifier) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineMedium,
+            style = titleStyle,
             color = MaterialTheme.colorScheme.onBackground,
         )
         if (description.isNotBlank()) {
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
             )
         }
     }

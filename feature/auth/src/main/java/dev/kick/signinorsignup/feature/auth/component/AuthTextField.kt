@@ -3,6 +3,7 @@ package dev.kick.signinorsignup.feature.auth.component
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,19 +28,42 @@ fun AuthTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier.fillMaxWidth(),
-        label = { Text(text = stringResource(id = labelResId)) },
+        textStyle = MaterialTheme.typography.bodyLarge,
+        label = {
+            Text(
+                text = stringResource(id = labelResId),
+                style = MaterialTheme.typography.labelMedium,
+            )
+        },
         placeholder = placeholderResId?.let { resId ->
-            { Text(text = stringResource(id = resId)) }
+            {
+                Text(
+                    text = stringResource(id = resId),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
         },
         singleLine = true,
         enabled = enabled,
         isError = errorMessageResId != null,
         supportingText = when {
             errorMessageResId != null -> {
-                { Text(text = stringResource(id = errorMessageResId)) }
+                {
+                    Text(
+                        text = stringResource(id = errorMessageResId),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
             helperTextResId != null -> {
-                { Text(text = stringResource(id = helperTextResId)) }
+                {
+                    Text(
+                        text = stringResource(id = helperTextResId),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
             }
             else -> null
         },
