@@ -1,5 +1,10 @@
 plugins {
-    id("signinorsignup.android.library.compose")
+    id("dev.kick.signinorsignup.android.library")
+    id("dev.kick.signinorsignup.android.compose")
+}
+
+android {
+    namespace = "dev.kick.signinorsignup.core.navigation"
 }
 
 dependencies {

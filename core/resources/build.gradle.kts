@@ -1,3 +1,7 @@
 plugins {
-    id("signinorsignup.android.library")
+    id("dev.kick.signinorsignup.android.library")
+}
+
+android {
+    namespace = "dev.kick.signinorsignup.core.resources"
 }

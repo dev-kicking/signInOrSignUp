@@ -1,7 +1,9 @@
 plugins {
-    id("signinorsignup.android.library")
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    id("dev.kick.signinorsignup.android.data")
+}
+
+android {
+    namespace = "dev.kick.signinorsignup.core.data"
 }
 
 dependencies {
