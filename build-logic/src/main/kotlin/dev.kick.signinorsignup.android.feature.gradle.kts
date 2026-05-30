@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":core:resources"))
     implementation(project(":core:ui"))
 
+    implementation(findLibrary("androidx-activity-compose"))
     implementation(findLibrary("androidx-core-ktx"))
     implementation(findLibrary("androidx-hilt-navigation-compose"))
     implementation(findLibrary("androidx-lifecycle-runtime-compose"))

@@ -163,7 +163,12 @@ class AuthViewModel @Inject constructor(
                     name = state.name,
                     password = state.password,
                 )
-                _sideEffect.send(AuthSideEffect.NavigateToSignupComplete(name = state.name))
+                _sideEffect.send(
+                    AuthSideEffect.NavigateToSignupComplete(
+                        email = state.email,
+                        name = state.name,
+                    ),
+                )
             }
         }
     }

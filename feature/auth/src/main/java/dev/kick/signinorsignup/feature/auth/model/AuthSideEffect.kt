@@ -16,6 +16,7 @@ sealed interface AuthSideEffect {
     ) : AuthSideEffect
 
     data class NavigateToSignupComplete(
+        val email: String,
         val name: String,
     ) : AuthSideEffect
 

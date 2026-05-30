@@ -1,8 +1,10 @@
 package dev.kick.signinorsignup.feature.auth.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -32,7 +34,8 @@ fun NavGraphBuilder.authNavGraph(
     navigateToSignupEmail: (String) -> Unit,
     navigateToSignupName: (String) -> Unit,
     navigateToSignupPassword: (String, String) -> Unit,
-    navigateToSignupComplete: (String) -> Unit,
+    navigateToSignupComplete: (String, String) -> Unit,
+    navigateToLoginAfterSignup: (String) -> Unit,
     navigateBack: () -> Unit,
 ) {
     navigation<AuthGraph>(
@@ -45,6 +48,7 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupName = navigateToSignupName,
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
+                navigateToLoginAfterSignup = navigateToLoginAfterSignup,
                 navigateBack = navigateBack,
             ) { uiState, onIntent ->
                 AuthEmailScreen(
@@ -64,6 +68,7 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupName = navigateToSignupName,
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
+                navigateToLoginAfterSignup = navigateToLoginAfterSignup,
                 navigateBack = navigateBack,
             ) { uiState, onIntent ->
                 LoginScreen(
@@ -83,6 +88,7 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupName = navigateToSignupName,
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
+                navigateToLoginAfterSignup = navigateToLoginAfterSignup,
                 navigateBack = navigateBack,
             ) { uiState, onIntent ->
                 SignupEmailScreen(
@@ -102,6 +108,7 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupName = navigateToSignupName,
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
+                navigateToLoginAfterSignup = navigateToLoginAfterSignup,
                 navigateBack = navigateBack,
             ) { uiState, onIntent ->
                 SignupNameScreen(
@@ -122,6 +129,7 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupName = navigateToSignupName,
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
+                navigateToLoginAfterSignup = navigateToLoginAfterSignup,
                 navigateBack = navigateBack,
             ) { uiState, onIntent ->
                 SignupPasswordScreen(
@@ -140,10 +148,12 @@ fun NavGraphBuilder.authNavGraph(
                 navigateToSignupName = navigateToSignupName,
                 navigateToSignupPassword = navigateToSignupPassword,
                 navigateToSignupComplete = navigateToSignupComplete,
+                navigateToLoginAfterSignup = navigateToLoginAfterSignup,
                 navigateBack = navigateBack,
             ) { _, onIntent ->
                 SignupCompleteScreen(
                     name = route.name,
+                    onLoginClick = { navigateToLoginAfterSignup(route.email) },
                     onIntent = onIntent,
                 )
             }
@@ -160,10 +170,12 @@ private fun AuthRoute(
     navigateToSignupEmail: (String) -> Unit,
     navigateToSignupName: (String) -> Unit,
     navigateToSignupPassword: (String, String) -> Unit,
-    navigateToSignupComplete: (String) -> Unit,
+    navigateToSignupComplete: (String, String) -> Unit,
+    navigateToLoginAfterSignup: (String) -> Unit,
     navigateBack: () -> Unit,
     content: @Composable (AuthUiState, (AuthIntent) -> Unit) -> Unit,
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(initialEmail) {
@@ -177,14 +189,18 @@ private fun AuthRoute(
     LaunchedEffect(viewModel) {
         viewModel.sideEffect.collect { sideEffect ->
             when (sideEffect) {
-                is AuthSideEffect.ShowMessage -> Unit
+                is AuthSideEffect.ShowMessage -> {
+                    Toast.makeText(context, context.getString(sideEffect.messageResId), Toast.LENGTH_SHORT).show()
+                }
                 is AuthSideEffect.NavigateToLogin -> navigateToLogin(sideEffect.email)
                 is AuthSideEffect.NavigateToSignupEmail -> navigateToSignupEmail(sideEffect.email)
                 is AuthSideEffect.NavigateToSignupName -> navigateToSignupName(sideEffect.email)
                 is AuthSideEffect.NavigateToSignupPassword -> {
                     navigateToSignupPassword(sideEffect.email, sideEffect.name)
                 }
-                is AuthSideEffect.NavigateToSignupComplete -> navigateToSignupComplete(sideEffect.name)
+                is AuthSideEffect.NavigateToSignupComplete -> {
+                    navigateToSignupComplete(sideEffect.email, sideEffect.name)
+                }
                 AuthSideEffect.NavigateBack -> navigateBack()
             }
         }

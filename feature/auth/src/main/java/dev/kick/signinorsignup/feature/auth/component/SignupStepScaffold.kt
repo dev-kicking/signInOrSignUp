@@ -32,6 +32,7 @@ fun SignupStepScaffold(
     currentStep: Int,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    showBackButton: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(
         horizontal = 24.dp,
         vertical = 16.dp,
@@ -44,6 +45,7 @@ fun SignupStepScaffold(
         currentStep = currentStep,
         onBackClick = onBackClick,
         modifier = modifier,
+        showBackButton = showBackButton,
         contentPadding = contentPadding,
         content = content,
     )
@@ -56,6 +58,7 @@ fun SignupStepScaffold(
     currentStep: Int,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    showBackButton: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(
         horizontal = 24.dp,
         vertical = 16.dp,
@@ -67,7 +70,10 @@ fun SignupStepScaffold(
             .fillMaxSize()
             .padding(contentPadding),
     ) {
-        SignupStepTopBar(onBackClick = onBackClick)
+        SignupStepTopBar(
+            onBackClick = onBackClick,
+            showBackButton = showBackButton,
+        )
         Spacer(modifier = Modifier.height(16.dp))
         SignupStepProgress(currentStep = currentStep)
         Spacer(modifier = Modifier.height(40.dp))
@@ -83,6 +89,7 @@ fun SignupStepScaffold(
 @Composable
 private fun SignupStepTopBar(
     onBackClick: () -> Unit,
+    showBackButton: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -91,15 +98,18 @@ private fun SignupStepTopBar(
             .height(48.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TextButton(
-            onClick = onBackClick,
-            contentPadding = PaddingValues(0.dp),
-            modifier = Modifier.size(48.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.auth_action_back),
-                style = MaterialTheme.typography.labelMedium,
-            )
+        if (showBackButton) {
+            TextButton(
+                onClick = onBackClick,
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier.size(48.dp),
+            ) {
+                Text(
+                    text = "←",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+            }
         }
     }
 }

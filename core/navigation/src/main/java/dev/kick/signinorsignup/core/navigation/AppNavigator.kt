@@ -34,8 +34,22 @@ class AppNavigator(
         )
     }
 
-    fun navigateToSignupComplete(name: String) {
-        navController.navigate(SignupComplete(name = name))
+    fun navigateToSignupComplete(
+        email: String,
+        name: String,
+    ) {
+        navController.navigate(
+            SignupComplete(
+                email = email,
+                name = name,
+            ),
+        )
+    }
+
+    fun navigateToLoginAfterSignup(email: String) {
+        navController.navigate(Login(email = email)) {
+            popUpTo(AuthGraph)
+        }
     }
 
     fun navigateBack() {

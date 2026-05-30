@@ -30,6 +30,7 @@ fun SignupNameScreen(
             value = uiState.name,
             onValueChange = { onIntent(AuthIntent.NameChanged(it)) },
             labelResId = R.string.auth_label_name,
+            placeholderResId = R.string.auth_placeholder_name,
             errorMessageResId = uiState.nameErrorMessageResId,
         )
         Spacer(modifier = Modifier.height(24.dp))

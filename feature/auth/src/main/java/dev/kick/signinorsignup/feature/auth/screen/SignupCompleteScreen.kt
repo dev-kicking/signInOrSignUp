@@ -1,5 +1,6 @@
 package dev.kick.signinorsignup.feature.auth.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
@@ -18,9 +19,13 @@ import dev.kick.signinorsignup.feature.auth.model.AuthIntent
 @Composable
 fun SignupCompleteScreen(
     name: String,
+    onLoginClick: () -> Unit,
     onIntent: (AuthIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    BackHandler(enabled = true) {
+    }
+
     val completeTitle = buildAnnotatedString {
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
             append(name)
@@ -35,12 +40,13 @@ fun SignupCompleteScreen(
         description = stringResource(id = R.string.auth_signup_complete_description),
         currentStep = 3,
         onBackClick = { onIntent(AuthIntent.BackClicked) },
+        showBackButton = false,
         modifier = modifier,
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         AuthPrimaryButton(
             textResId = R.string.auth_action_confirm,
-            onClick = { onIntent(AuthIntent.BackClicked) },
+            onClick = onLoginClick,
         )
     }
 }

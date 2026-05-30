@@ -31,5 +31,6 @@ data class SignupPassword(
 
 @Serializable
 data class SignupComplete(
+    val email: String,
     val name: String,
 )
