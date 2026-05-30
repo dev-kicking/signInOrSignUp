@@ -11,7 +11,6 @@ import dev.kick.signinorsignup.core.domain.usecase.ValidateNameUseCase
 import dev.kick.signinorsignup.core.domain.usecase.ValidatePasswordUseCase
 import dev.kick.signinorsignup.feature.auth.model.AuthIntent
 import dev.kick.signinorsignup.feature.auth.model.AuthSideEffect
-import dev.kick.signinorsignup.feature.auth.model.AuthStep
 import dev.kick.signinorsignup.feature.auth.model.AuthUiState
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -42,6 +41,7 @@ class AuthViewModel @Inject constructor(
             is AuthIntent.EmailChanged -> updateEmail(intent.email)
             AuthIntent.EmailClearClicked -> updateEmail("")
             AuthIntent.EmailSubmitClicked -> submitEmail()
+            AuthIntent.SignupEmailSubmitClicked -> submitSignupEmail()
             is AuthIntent.PasswordChanged -> updatePassword(intent.password)
             AuthIntent.PasswordClearClicked -> updatePassword("")
             AuthIntent.LoginClicked -> login()
@@ -82,23 +82,27 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             runWithLoading {
-                val nextStep = if (checkEmailExistsUseCase(email)) {
-                    AuthStep.LoginPassword
+                if (checkEmailExistsUseCase(email)) {
+                    _sideEffect.send(AuthSideEffect.NavigateToLogin(email = email))
                 } else {
-                    AuthStep.SignupEmailConfirmed
-                }
-
-                _uiState.update {
-                    it.copy(
-                        step = nextStep,
-                        helperMessage = when (nextStep) {
-                            AuthStep.LoginPassword -> "이메일이 확인되었습니다. :)"
-                            AuthStep.SignupEmailConfirmed -> "로그인 정보가 없습니다. 회원가입을 진행할게요."
-                            else -> it.helperMessage
-                        },
-                    )
+                    _sideEffect.send(AuthSideEffect.NavigateToSignupEmail(email = email))
                 }
             }
+        }
+    }
+
+    private fun submitSignupEmail() {
+        val email = uiState.value.email
+
+        if (!validateEmailUseCase(email)) {
+            _uiState.update {
+                it.copy(emailErrorMessage = "이메일 형식이 올바르지 않습니다.")
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _sideEffect.send(AuthSideEffect.NavigateToSignupName(email = email))
         }
     }
 
@@ -134,7 +138,14 @@ class AuthViewModel @Inject constructor(
             return
         }
 
-        moveTo(AuthStep.SignupPassword)
+        viewModelScope.launch {
+            _sideEffect.send(
+                AuthSideEffect.NavigateToSignupPassword(
+                    email = uiState.value.email,
+                    name = name,
+                ),
+            )
+        }
     }
 
     private fun register() {
@@ -152,27 +163,14 @@ class AuthViewModel @Inject constructor(
                     name = state.name,
                     password = state.password,
                 )
-                _uiState.update { it.copy(step = AuthStep.SignupComplete) }
+                _sideEffect.send(AuthSideEffect.NavigateToSignupComplete)
             }
         }
     }
 
-    private fun moveTo(step: AuthStep) {
-        _uiState.update { it.copy(step = step) }
-    }
-
     private fun moveBack() {
-        _uiState.update {
-            it.copy(
-                step = when (it.step) {
-                    AuthStep.Email -> AuthStep.Email
-                    AuthStep.LoginPassword -> AuthStep.Email
-                    AuthStep.SignupEmailConfirmed -> AuthStep.Email
-                    AuthStep.SignupName -> AuthStep.SignupEmailConfirmed
-                    AuthStep.SignupPassword -> AuthStep.SignupName
-                    AuthStep.SignupComplete -> AuthStep.SignupPassword
-                },
-            )
+        viewModelScope.launch {
+            _sideEffect.send(AuthSideEffect.NavigateBack)
         }
     }
 

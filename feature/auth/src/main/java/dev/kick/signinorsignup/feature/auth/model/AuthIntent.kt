@@ -7,6 +7,7 @@ sealed interface AuthIntent {
     data class EmailChanged(val email: String) : AuthIntent
     data object EmailClearClicked : AuthIntent
     data object EmailSubmitClicked : AuthIntent
+    data object SignupEmailSubmitClicked : AuthIntent
     data class PasswordChanged(val password: String) : AuthIntent
     data object PasswordClearClicked : AuthIntent
     data object LoginClicked : AuthIntent

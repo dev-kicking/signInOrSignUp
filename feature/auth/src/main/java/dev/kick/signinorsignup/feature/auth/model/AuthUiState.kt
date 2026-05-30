@@ -4,7 +4,6 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class AuthUiState(
-    val step: AuthStep = AuthStep.Email,
     val email: String = "",
     val password: String = "",
     val name: String = "",
@@ -15,6 +14,7 @@ data class AuthUiState(
     val isLoading: Boolean = false,
 ) {
     val isEmailSubmitEnabled: Boolean = email.isNotBlank() && !isLoading
+    val isSignupEmailSubmitEnabled: Boolean = email.isNotBlank() && !isLoading
     val isLoginEnabled: Boolean = password.isNotBlank() && !isLoading
     val isNameSubmitEnabled: Boolean = name.isNotBlank() && !isLoading
     val isSignupSubmitEnabled: Boolean = password.isNotBlank() && !isLoading

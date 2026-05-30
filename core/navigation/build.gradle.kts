@@ -1,6 +1,5 @@
 plugins {
-    id("dev.kick.signinorsignup.android.library")
-    id("dev.kick.signinorsignup.android.compose")
+    id("dev.kick.signinorsignup.android.navigation")
 }
 
 android {
@@ -8,9 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-
-    implementation(libs.androidx.navigation.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
 }
