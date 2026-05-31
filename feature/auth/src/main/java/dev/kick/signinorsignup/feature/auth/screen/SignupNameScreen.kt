@@ -1,7 +1,6 @@
 package dev.kick.signinorsignup.feature.auth.screen
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,7 +32,7 @@ fun SignupNameScreen(
             placeholderResId = R.string.auth_placeholder_name,
             errorMessageResId = uiState.nameErrorMessageResId,
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
         AuthPrimaryButton(
             textResId = R.string.auth_action_next,
             onClick = { onIntent(AuthIntent.SignupNameSubmitClicked) },

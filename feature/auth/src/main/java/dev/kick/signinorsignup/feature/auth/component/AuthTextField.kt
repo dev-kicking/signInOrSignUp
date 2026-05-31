@@ -16,9 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
@@ -84,7 +84,7 @@ fun AuthTextField(
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.outline,
                             modifier = Modifier
-                                .align(androidx.compose.ui.Alignment.CenterEnd)
+                                .align(Alignment.CenterEnd)
                                 .clickable { onValueChange("") },
                         )
                     }

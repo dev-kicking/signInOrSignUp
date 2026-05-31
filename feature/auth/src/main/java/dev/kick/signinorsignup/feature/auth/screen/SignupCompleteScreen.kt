@@ -2,7 +2,6 @@ package dev.kick.signinorsignup.feature.auth.screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,7 +42,7 @@ fun SignupCompleteScreen(
         showBackButton = false,
         modifier = modifier,
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
         AuthPrimaryButton(
             textResId = R.string.auth_action_confirm,
             onClick = onLoginClick,

@@ -1,7 +1,6 @@
 package dev.kick.signinorsignup.feature.auth.screen
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,7 +36,7 @@ fun SignupPasswordScreen(
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
         AuthPrimaryButton(
             textResId = R.string.auth_action_signup_complete,
             onClick = { onIntent(AuthIntent.SignupPasswordSubmitClicked) },

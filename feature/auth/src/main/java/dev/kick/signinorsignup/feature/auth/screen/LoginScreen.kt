@@ -44,7 +44,7 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
         AuthPrimaryButton(
             textResId = R.string.auth_action_login,
             onClick = { onIntent(AuthIntent.LoginClicked) },
