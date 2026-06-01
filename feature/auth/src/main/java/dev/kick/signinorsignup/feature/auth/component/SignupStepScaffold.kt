@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -96,7 +95,10 @@ fun SignupStepScaffold(
             ),
         )
         Spacer(modifier = Modifier.height(16.dp))
-        SignupStepProgress(currentStep = currentStep)
+        SignupStepProgress(
+            currentStep = currentStep,
+            modifier = Modifier.fillMaxWidth(),
+        )
         Column(
             modifier = Modifier.padding(contentPadding),
         ) {
@@ -167,28 +169,32 @@ private fun SignupStepProgress(
     currentStep: Int,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(0.dp),
+    Box(
+        modifier = modifier
+            .height(4.dp)
+            .clip(RoundedCornerShape(50)),
     ) {
-        repeat(SIGNUP_STEP_COUNT) { index ->
-            val isFilled = index < currentStep
-            val color = if (isFilled) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(0.dp),
+        ) {
+            repeat(SIGNUP_STEP_COUNT) { index ->
+                val isFilled = index < currentStep
+                val color = if (isFilled) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                }
 
-            Box(
-                modifier = Modifier
-                    .width(SIGNUP_STEP_PROGRESS_WIDTH)
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(color),
-            )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(4.dp)
+                        .background(color),
+                )
+            }
         }
     }
 }
 
 private const val SIGNUP_STEP_COUNT = 3
-private val SIGNUP_STEP_PROGRESS_WIDTH = 125.dp

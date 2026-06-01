@@ -7,8 +7,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-
     implementation(findLibrary("androidx-navigation-compose"))
     implementation(findLibrary("kotlinx-serialization-json"))
 }

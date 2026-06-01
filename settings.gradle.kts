@@ -22,7 +22,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "SignInOrSignUp"
 include(":app")
-include(":core:common")
 include(":core:domain")
 include(":core:data")
 include(":core:navigation")
