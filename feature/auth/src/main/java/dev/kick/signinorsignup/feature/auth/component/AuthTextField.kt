@@ -16,8 +16,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
@@ -43,10 +46,18 @@ fun AuthTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    var hasBeenFocused by remember { mutableStateOf(false) }
+    val showEmptyFocusedOutError = hasBeenFocused && !isFocused && value.isEmpty()
     val underlineColor = when {
-        errorMessageResId != null -> MaterialTheme.colorScheme.error
+        errorMessageResId != null || showEmptyFocusedOutError -> MaterialTheme.colorScheme.error
         isFocused || value.isNotBlank() -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.outline
+    }
+
+    LaunchedEffect(isFocused) {
+        if (isFocused) {
+            hasBeenFocused = true
+        }
     }
 
     Column(modifier = modifier.fillMaxWidth()) {
