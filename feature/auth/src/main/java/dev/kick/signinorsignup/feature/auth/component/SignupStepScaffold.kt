@@ -1,6 +1,7 @@
 package dev.kick.signinorsignup.feature.auth.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,15 +19,20 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.kick.signinorsignup.feature.auth.R
@@ -69,27 +77,37 @@ fun SignupStepScaffold(
     ),
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val layoutDirection = LocalLayoutDirection.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
-            .imePadding()
-            .padding(contentPadding),
+            .imePadding(),
     ) {
         SignupStepTopBar(
             onBackClick = onBackClick,
             showBackButton = showBackButton,
+            modifier = Modifier.padding(
+                start = contentPadding.calculateStartPadding(layoutDirection),
+                top = contentPadding.calculateTopPadding(),
+                end = contentPadding.calculateEndPadding(layoutDirection),
+            ),
         )
         Spacer(modifier = Modifier.height(16.dp))
         SignupStepProgress(currentStep = currentStep)
-        Spacer(modifier = Modifier.height(40.dp))
-        AuthTitleSection(
-            title = title,
-            description = description,
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-        content()
+        Column(
+            modifier = Modifier.padding(contentPadding),
+        ) {
+            Spacer(modifier = Modifier.height(40.dp))
+            AuthTitleSection(
+                title = title,
+                description = description,
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+            content()
+        }
     }
 }
 
@@ -106,16 +124,39 @@ private fun SignupStepTopBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (showBackButton) {
-            TextButton(
+            val iconColor = MaterialTheme.colorScheme.onBackground
+            val backDescription = stringResource(id = R.string.auth_content_description_back)
+            IconButton(
                 onClick = onBackClick,
-                contentPadding = PaddingValues(0.dp),
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier
+                    .size(48.dp)
+                    .semantics {
+                        contentDescription = backDescription
+                    },
             ) {
-                Text(
-                    text = "←",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
+                Canvas(modifier = Modifier.size(24.dp)) {
+                    drawLine(
+                        color = iconColor,
+                        start = Offset(size.width, size.height / 2),
+                        end = Offset(4.dp.toPx(), size.height / 2),
+                        strokeWidth = 2.dp.toPx(),
+                        cap = StrokeCap.Round,
+                    )
+                    drawLine(
+                        color = iconColor,
+                        start = Offset(4.dp.toPx(), size.height / 2),
+                        end = Offset(11.dp.toPx(), 5.dp.toPx()),
+                        strokeWidth = 2.dp.toPx(),
+                        cap = StrokeCap.Round,
+                    )
+                    drawLine(
+                        color = iconColor,
+                        start = Offset(4.dp.toPx(), size.height / 2),
+                        end = Offset(11.dp.toPx(), size.height - 5.dp.toPx()),
+                        strokeWidth = 2.dp.toPx(),
+                        cap = StrokeCap.Round,
+                    )
+                }
             }
         }
     }
@@ -127,8 +168,8 @@ private fun SignupStepProgress(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         repeat(SIGNUP_STEP_COUNT) { index ->
             val isFilled = index < currentStep
@@ -140,7 +181,7 @@ private fun SignupStepProgress(
 
             Box(
                 modifier = Modifier
-                    .weight(1f)
+                    .width(SIGNUP_STEP_PROGRESS_WIDTH)
                     .height(4.dp)
                     .clip(RoundedCornerShape(50))
                     .background(color),
@@ -150,3 +191,4 @@ private fun SignupStepProgress(
 }
 
 private const val SIGNUP_STEP_COUNT = 3
+private val SIGNUP_STEP_PROGRESS_WIDTH = 125.dp

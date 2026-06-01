@@ -23,7 +23,7 @@ fun AppNavHost(
             navigateToSignupName = navigator::navigateToSignupName,
             navigateToSignupPassword = navigator::navigateToSignupPassword,
             navigateToSignupComplete = navigator::navigateToSignupComplete,
-            navigateToLoginAfterSignup = navigator::navigateToLoginAfterSignup,
+            navigateToAuthEmailAfterSignup = navigator::navigateToAuthEmailAfterSignup,
             navigateBack = navigator::navigateBack,
         )
     }

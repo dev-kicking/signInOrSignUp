@@ -20,8 +20,12 @@ internal val Project.libraryExtension: CommonExtension<*, *, *, *, *, *>
 internal val Project.androidExtension: CommonExtension<*, *, *, *, *, *>
     get() = runCatching { libraryExtension }
         .recoverCatching { applicationExtension }
-        .onFailure { println("Could not find Library or Application extension from this project") }
-        .getOrThrow()
+        .getOrElse {
+            throw IllegalStateException(
+                "Could not find Library or Application extension from this project",
+                it,
+            )
+        }
 
 internal val ExtensionContainer.libs: VersionCatalog
     get() = getByType<VersionCatalogsExtension>().named("libs")

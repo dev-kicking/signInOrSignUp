@@ -19,6 +19,11 @@ class AppNavigator(
     }
 
     fun navigateToSignupName(email: String) {
+        navController.navigate(SignupEmail(email = email)) {
+            popUpTo<SignupEmail> {
+                inclusive = true
+            }
+        }
         navController.navigate(SignupName(email = email))
     }
 
@@ -46,9 +51,12 @@ class AppNavigator(
         )
     }
 
-    fun navigateToLoginAfterSignup(email: String) {
-        navController.navigate(Login(email = email)) {
-            popUpTo(AuthGraph)
+    fun navigateToAuthEmailAfterSignup() {
+        navController.navigate(AuthEmail) {
+            popUpTo(AuthGraph) {
+                inclusive = false
+            }
+            launchSingleTop = true
         }
     }
 

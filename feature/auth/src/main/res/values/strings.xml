@@ -25,6 +25,8 @@
     <string name="auth_action_login">로그인</string>
     <string name="auth_action_signup_complete">가입완료</string>
     <string name="auth_action_confirm">로그인</string>
+    <string name="auth_content_description_back">이전 화면으로 이동</string>
+    <string name="auth_content_description_clear_text">입력한 내용 지우기</string>
 
     <string name="auth_helper_email_confirmed">이메일이 확인되었습니다. :)</string>
     <string name="auth_helper_signup_required">로그인 정보가 없습니다. 회원가입을 진행할게요.</string>
